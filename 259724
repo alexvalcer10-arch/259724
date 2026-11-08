@@ -1,1 +1,54 @@
+import time
 
+def busqueda_binaria(catalogo, id_buscado):
+    """
+    Realiza una búsqueda binaria iterativa en un catálogo ordenado por ID de producto.
+    Retorna el índice del producto o -1 si no se encuentra.
+    """
+    izquierda = 0
+    derecha = len(catalogo) - 1
+    
+    while izquierda <= derecha:
+        medio = (izquierda + derecha) // 2
+        id_actual = catalogo[medio]['id']
+        
+        if id_actual == id_buscado:
+            return medio # Encontrado, devuelve la posición
+        elif id_actual < id_buscado:
+            izquierda = medio + 1 # Buscar en la mitad derecha
+        else:
+            derecha = medio - 1 # Buscar en la mitad izquierda
+            
+    return -1 # No encontrado
+
+# --- 1. Prueba unitaria básica ---
+catalogo_inventario = [
+    {'id': 102, 'nombre': 'Teclado Mecánico', 'precio': 850},
+    {'id': 205, 'nombre': 'Mouse Gamer', 'precio': 450},
+    {'id': 310, 'nombre': 'Monitor 24"', 'precio': 3200},
+    {'id': 450, 'nombre': 'Diadema Headset', 'precio': 600},
+    {'id': 580, 'nombre': 'Laptop i7', 'precio': 18500}
+]
+
+buscado = 310
+resultado = busqueda_binaria(catalogo_inventario, buscado)
+
+if resultado != -1:
+    print(f"¡Producto encontrado!: {catalogo_inventario[resultado]}")
+else:
+    print("Producto no encontrado en el inventario.")
+
+
+# --- 2. Prueba de rendimiento con 1,000,000 de registros (Fase 4) ---
+print("\nEjecutando pruebas de rendimiento...")
+inventario_gigante = sorted([{'id': i, 'nombre': f'Prod_{i}'} for i in range(1, 1000001)])
+
+id_a_buscar = 999999
+
+inicio = time.perf_counter()
+pos = busqueda_binaria(inventario_gigante, id_a_buscar)
+fin = time.perf_counter()
+
+tiempo_transcurrido = (fin - inicio) * 1000 # Convertir a milisegundos
+print(f"Elemento encontrado en el índice: {pos}")
+print(f"Tiempo de ejecución con 1,000,000 de registros: {tiempo_transcurrido:.6f} ms")
